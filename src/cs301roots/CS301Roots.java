@@ -20,6 +20,7 @@ public class CS301Roots {
         
         //Gather plot data from function A and B
 //        ((FunctionA)myFuncA).plotFunction(-30, 30);
+//        ((FunctionA)myFuncA).precisePlotFunction(-1.0, 4.5);
 //        ((FunctionB)myFuncB).plotFunction(105, 135);
         
         

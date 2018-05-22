@@ -55,7 +55,7 @@ public class Secant {
                 a = b;
                 b = temp;
             }
-            
+
             double difference = (b - a) / (fOfB - fOfA);
             b = a;
             fOfB = fOfA;

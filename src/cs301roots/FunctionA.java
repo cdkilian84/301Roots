@@ -40,8 +40,22 @@ public class FunctionA implements Function{
     }
     
     
+    //method to plot the function from a start to end X value using quarter step values - for plotting points more precisely
+    public void precisePlotFunction(double startX, double endX){
+        StringBuilder plot = new StringBuilder();
+        double counter = startX;
+        while(counter < endX){
+            double yVal = theFunction(counter);
+            plot.append(counter).append(",").append(yVal).append("\n");
+            counter += 0.25;
+        }
+        
+        outputResults(plot.toString(), "Function A Results.csv");
+    }
+    
+    
     //Method to output test results to a file. Used to generate CSV files.
-    public void outputResults(String resultsString, String fileName){
+    private void outputResults(String resultsString, String fileName){
         PrintWriter pw = null;
         try{
             pw = new PrintWriter(new File(fileName));
