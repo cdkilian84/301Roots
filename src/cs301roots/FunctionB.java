@@ -4,26 +4,26 @@
 
 package cs301roots;
 
-//Class to hold the first hard-coded function (function "a" from assignment specs)
+//Class to hold the second hard-coded function (function "b" from assignment specs)
 
 import java.io.File;
 import java.io.PrintWriter;
 
-public class FunctionA implements Function{
-
+public class FunctionB implements Function{
+    
     @Override
-    //functionA returns the value of f(x) = 2x^3 - 11.7x^2 + 17.7x - 5
+    //functionA returns the value of f(x) = x + 10 - x * cosh(50 / x)
     public double theFunction(double x){
         
-        double result = (2 * Math.pow(x, 3)) - (11.7 * Math.pow(x, 2)) + (17.7 * x) - 5;
+        double result = x + 10.0 - (x * Math.cosh(50.0/x));
         
         return result;
     }
     
-    //returns the functional value of the derivative of f(x), f'(x) = 6x^2 - 23.4x + 17.7
+    //returns the functional value of the derivative of f(x), f'(x) = ((50 * sinh(50 / x)) / x) - cosh(50 / x) + 1
     public double derivativeOfTheFunction(double x){
         
-        double result = (6 * Math.pow(x, 2)) - (23.4 * x) + 17.7;
+        double result = ((50.0 * Math.sinh(50.0 / x)) / x) - Math.cosh(50.0 / x) + 1.0;
         
         return result;
     }
@@ -36,7 +36,7 @@ public class FunctionA implements Function{
             plot.append(i).append(",").append(yVal).append("\n");
         }
         
-        outputResults(plot.toString(), "Function A Results.csv");
+        outputResults(plot.toString(), "Function B Results.csv");
     }
     
     
@@ -59,5 +59,4 @@ public class FunctionA implements Function{
             System.out.println(e.getMessage());
         }
     }
-    
 }

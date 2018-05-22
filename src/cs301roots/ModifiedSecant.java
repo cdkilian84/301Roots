@@ -7,43 +7,38 @@ package cs301roots;
 import java.io.File;
 import java.io.PrintWriter;
 
-//Class which implements Newton-Raphson method
-public class Newtons {
+//Class implementing the Modified Secant method
+public class ModifiedSecant {
     private final int NUMPREVIOUSVALS = 4; //number of previous f(x) values to check for divergence
     
-    //Method to calculate the Newton-Raphson root of a provided function. Inputs include the function being tested,
-    //the initial guess value "x", the maximum iterations allowed, the error percentage (represented as a value from 0 to 1) epsilon,
-    //and the value "zeroThreshhold" which represents how close to 0 the f(x) value should be before being accepted as a root.
-    //The function will run either until the relative error is less than the provided epsilon value and the absolute value of
-    //f(x) is less than zeroThreshhold, or until the maximum number of iterations has been reached. The method may also quit
-    //prematurely if it is detected to be divergent (ie the functional values are continually moving away from zero rather than towards it).
-    public void runAlg(Function func, double x, int nMax, double epsilon, double zeroThreshhold){
+    //Method to calculate the Modified Secant root of a provided function. Inputs include the function being tested, the initial
+    //guess value "x", the small "delta" value used for iterating, the maximum iterations allowed, the error percentage 
+    //(represented as a value from 0 to 1) epsilon, and the value "zeroThreshhold" which represents how close to 0 the f(x) 
+    //value should be before being accepted as a root. The function will run either until the relative error is less than the provided 
+    //epsilon value and the absolute value of f(x) is less than zeroThreshhold, or until the maximum number of iterations has been reached. 
+    //The method may also quit prematurely if it is detected to be divergent 
+    //(ie the functional values are continually moving away from zero rather than towards it).
+    public void runAlg(Function func, double x, double delta, int nMax, double epsilon, double zeroThreshhold){
         double fOfX = func.theFunction(x);
-        double derivOfX = func.derivativeOfTheFunction(x);
+        double deltaX = delta * x;
+        double fOfDeltaX = func.theFunction(x + deltaX);
         double[] previousFuncVals = new double[NUMPREVIOUSVALS];
         double previousX = 0.0;
         StringBuilder plot = new StringBuilder(); //for use in plotting iterations vs relative error via CSV
-        
-        System.out.println("n = 0, x = " + x + ", f(x) = " + fOfX + ", relative error = null");
-        plot.append(0).append(",").append("null").append(",").append(x).append(",").append(fOfX).append(",").append(derivOfX).append("\n");
+       
+        System.out.println("n = 0, x = " + x + ", f(x) = " + fOfX);
+        plot.append(0).append(",").append("null").append(",").append(x).append(",").append(deltaX).append(",")
+                .append(fOfX).append(",").append(fOfDeltaX).append("\n");
        
         for(int n = 1; n <= nMax; n++){
-            
+            //double deltaX = delta * x;
+            //double fOfDeltaX = func.theFunction(x + deltaX);
             //if f(x) = 0, a root has been found
             if(fOfX == 0){
                 System.out.println("Root found at x = " + x);
                 break;
             }
-            //if f'(x) = 0, a local min/max has been found and iteration cannot continue
-            //Alternatively, stop iterating if the derivative is approaching close to zero
-            if(derivOfX == 0){
-                System.out.println("The derivative is zero! Local min/max found. Stopping iterations.");
-                break;
-            }else if(Math.abs(derivOfX) < 0.00001){
-                System.out.println("Derivative is approaching zero - stopping iteration.");
-                break;
-            }
-
+           
             //Divergence check done here to stop iteration early if iterations are diverging significantly
             //from root - functional values gathered and checked
             if(n <= NUMPREVIOUSVALS){
@@ -56,27 +51,26 @@ public class Newtons {
                     updatePreviousVals(previousFuncVals, fOfX);
                 }
             }
-            
-            //calculate the next x value based on current x value - f(x)/f'(x)
-            double d = fOfX / derivOfX;
+
+            //calculate the next x value based on current x value - f(x)(delta * x)/(f(x + delta*x) - f(x))
+            double diff = fOfX * (deltaX / (fOfDeltaX - fOfX));
             previousX = x;
-            x = x - d;
-            //update f(x) and f'(x) for next iteration
+            x = x - diff;
+            //update values for next iteration
             fOfX = func.theFunction(x);
-            derivOfX = func.derivativeOfTheFunction(x);
+            deltaX = delta * x;
+            fOfDeltaX = func.theFunction(x + deltaX);
             double relError = Math.abs((x-previousX)/x);
-            plot.append(n).append(",").append(relError).append(",").append(x).append(",").append(fOfX).append(",").append(derivOfX).append("\n");
+            plot.append(n).append(",").append(relError).append(",").append(x).append(",").append(deltaX).append(",").append(fOfX).append(",").append(fOfDeltaX).append("\n");
             System.out.println("n = " + n + ", x = " + x + ", f(x) = " + fOfX + ", relative error = " + relError);
-            
-            
+
             if((relError < epsilon) && (Math.abs(fOfX) < zeroThreshhold)){
                 System.out.println("Convergence achieved");
                 break;
             }
-            
-        }
+        } 
         
-        outputResults(plot.toString(), "Newton Method Results.csv");
+        outputResults(plot.toString(), "Modified Secant Method Results.csv");
     }
     
     //Method used to check if iterations are diverging away from root - if 4 iterations in a row have increasing f(x) values,
@@ -118,9 +112,10 @@ public class Newtons {
             StringBuilder output = new StringBuilder();
             output.append("Iteration,");
             output.append("Relative Error,");
-            output.append("Current X,");
+            output.append("x,");
+            output.append("delta * x,");
             output.append("f(x),");
-            output.append("f'(x)");
+            output.append("f(x + delta*x)");
             output.append("\n");
             
             output.append(resultsString);
@@ -132,5 +127,4 @@ public class Newtons {
             System.out.println(e.getMessage());
         }
     }
-    
 }

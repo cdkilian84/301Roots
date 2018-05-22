@@ -1,8 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+//Christopher Kilian
+//CS 301 - Spring 2018
+//Project 2 - Roots
+
 package cs301roots;
 
 //simple interface demanding that all "functions" must implement a method which accepts a double and returns another double
